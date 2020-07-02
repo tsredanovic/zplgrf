@@ -1,5 +1,7 @@
+import base64
 import re
 
+import zlib
 from PIL import Image
 
 """
@@ -124,6 +126,25 @@ def find_dg_commands(zpl):
     return dg_cmds_indexes
 
 
+def find_gf_commands(zpl):
+    """
+    Finds (start, end) indexes of all gf commands inside zpl code.
+
+    :param zpl: zpl code (string)
+    :return: (start, end) indexes of all gf commands inside zpl code
+    """
+    gf_cmd_start = '\^GF'
+    starts = sorted([match.start() for match in re.finditer(gf_cmd_start, zpl)])
+    possible_ends = sorted([match.start() for match in re.finditer('\^', zpl)])
+    gf_cmds_indexes = []
+    for start in starts:
+        for possible_end in possible_ends:
+            if possible_end > start:
+                gf_cmds_indexes.append((start, possible_end))
+                break
+    return gf_cmds_indexes
+
+
 def extract_commands(zpl, indexes):
     """
     Extracts all commands based on (start, end) inside zpl code.
@@ -188,6 +209,32 @@ def break_dg_command(dg_cmd):
     return device, image_name, extension, bytes_total, bytes_per_row, data
 
 
+def break_gf_command(gf_cmd):
+    """
+    Extracts ^GF command parameters:
+        a,b,c,d,data
+        a - compression type
+            = A - ASCII hexadecimal
+            = B - binary
+            = C - compressed binary
+        b - binary byte count
+        c - graphic field count
+        d - bytes per row
+        data - ASCII hexadecimal string defining image (possibly compressed)
+
+    :param gf_cmd: ^GF command (string)
+    :return: compression_type, binary_byte_count, graphic_field_count, bytes_per_row, data from ^GF command
+    """
+    gf_cmd_parts = gf_cmd[3:].split(",", 4)
+    compression_type = gf_cmd_parts[0]
+    binary_byte_count = int(gf_cmd_parts[1])
+    graphic_field_count = int(gf_cmd_parts[2])
+    bytes_per_row = int(gf_cmd_parts[3])
+    data = gf_cmd_parts[4]
+
+    return compression_type, binary_byte_count, graphic_field_count, bytes_per_row, data
+
+
 def build_dg_command(bytes_total, bytes_per_row, data, image_name, extension='.GRF', device='R:'):
     """
     Generates ~DG command from parameters:
@@ -231,6 +278,18 @@ def check_for_compression(data):
     for data_char in data:
         if data_char in compression_chars:
             return True
+    return False
+
+
+def check_for_z64_compression(data):
+    """
+    Checks if data starts with :Z64:.
+
+    :param data: ^GF command data
+    :return: is ^GF command data compressed or not
+    """
+    if data.startswith(':Z64:'):
+        return True
     return False
 
 
@@ -279,6 +338,22 @@ def decompress(data, bytes_per_row):
             current_line = current_line[chars_per_row:]
 
     return ''.join(lines)
+
+
+def decompress_z64(data):
+    """
+    Decompresses ^GF command data:
+        `:Z64:` is removed from the start, CRC (error detection code) is removed from the end.
+        Remaining data is base64 decoded.
+        Decoded data is decompressed with zlib.
+
+    :param data: compressed ^GF command data
+    :return: decompressed ^GF command data
+    """
+    base64_encoded_data = data.split(':')[2]
+    decoded_data = base64.b64decode(base64_encoded_data)
+    decompressed_data = zlib.decompress(decoded_data)
+    return decompressed_data.hex().upper()
 
 
 def substrings_of_same_consecutive_chars(string):
