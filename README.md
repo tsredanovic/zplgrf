@@ -44,7 +44,7 @@ for dg_cmd in dg_cmds:
     image.save('./img/dg_cmd_format.png')
 ```
 
-### Generating ~DG command ZPL code from a PIL image
+### Generating `~DG` command ZPL code from a PIL image
 ```python
 from zplgrf import *
 
