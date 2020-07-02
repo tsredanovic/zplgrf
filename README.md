@@ -2,15 +2,7 @@
 
 This project contains the utilities to work with GRF images from ZPL (Zebra Programming Languages).
 
-Currently supports:
-- Finding and extracting ~DG commands from ZPL code
-- Extracting parameters from ~DG commands
-- Checking for compression in ~DG commands
-- Decompression of ~DG commands
-- Generation of PIL images from ~DG commands
-- Generation of ~DG commands from PIL images
-- Compression of ~DG commands
-- Generation of ZPL code with ~DG commands
+Currently supported commands: ~DG, ^GF
 
 ## Init project
 
@@ -27,7 +19,7 @@ pip install -r requirements.txt
 ```python
 from zplgrf import *
 
-input_zpl_file_path = './zpl/example.zpl'
+input_zpl_file_path = './zpl_dg/example.zpl'
 
 # Read ZPL code from a file
 with open(input_zpl_file_path, 'r') as in_file:
@@ -49,10 +41,10 @@ for dg_cmd in dg_cmds:
     bits_total = size_byte_to_bit(bytes_total)
     bits_per_row = size_byte_to_bit(bytes_per_row)
     image = bits_to_image(bits_total, bits_per_row, data_bits)
-    image.save('./img/001.png'.format(image_name))
+    image.save('./img/dg_cmd_format.png')
 ```
 
-### Generating ZPL code from a PIL image
+### Generating ~DG command ZPL code from a PIL image
 ```python
 from zplgrf import *
 
@@ -74,6 +66,35 @@ zpl = write_zpl(dg_cmd, 20, 20, 1, 1)
 output_zpl_file_path = './zpl/example.zpl'
 with open(output_zpl_file_path, 'w') as out_file:
     out_file.write(zpl)
+```
+
+### Extracting `^GF` commands from ZPL code and generating PIL images
+```python
+from zplgrf import *
+
+input_zpl_file_path = './zpl_gf/example.zpl'
+
+# Read ZPL code from a file
+with open(input_zpl_file_path, 'r') as in_file:
+    zpl = in_file.read()
+
+# Find and extract ^GF commands
+gf_cmds_indexes = find_gf_commands(zpl)
+gf_cmds = extract_commands(zpl, gf_cmds_indexes)
+for gf_cmd in gf_cmds:
+    # Extract parameters from ^GFA commands
+    compression_type, binary_byte_count, graphic_field_count, bytes_per_row, data = break_gf_command(gf_cmd)
+    data = clean(data)
+    # Check for compression and decompress if needed
+    is_compressed = check_for_z64_compression(data)
+    if is_compressed:
+        data = decompress_z64(data)
+    # Generate a PIL image
+    data_bits = chars_to_bits(data)
+    bits_total = size_byte_to_bit(binary_byte_count)
+    bits_per_row = size_byte_to_bit(bytes_per_row)
+    image = bits_to_image(bits_total, bits_per_row, data_bits)
+    image.save('./img/gf_cmd_format.png')
 ```
 
 ## ZPL

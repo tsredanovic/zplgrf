@@ -6,11 +6,11 @@ input_zpl_file_path = './zpl_gf/example.zpl'
 with open(input_zpl_file_path, 'r') as in_file:
     zpl = in_file.read()
 
-# Find and extract ^GFA commands
+# Find and extract ^GF commands
 gf_cmds_indexes = find_gf_commands(zpl)
 gf_cmds = extract_commands(zpl, gf_cmds_indexes)
 for gf_cmd in gf_cmds:
-    # Extract parameters from ^GFA commands
+    # Extract parameters from ^GF commands
     compression_type, binary_byte_count, graphic_field_count, bytes_per_row, data = break_gf_command(gf_cmd)
     data = clean(data)
     # Check for compression and decompress if needed
