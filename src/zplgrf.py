@@ -145,6 +145,25 @@ def find_gf_commands(zpl):
     return gf_cmds_indexes
 
 
+def find_fd_commands(zpl):
+    """
+    Finds (start, end) indexes of all fd commands inside zpl code.
+
+    :param zpl: zpl code (string)
+    :return: (start, end) indexes of all fd commands inside zpl code
+    """
+    gf_cmd_start = '\^FD'
+    starts = sorted([match.start() for match in re.finditer(gf_cmd_start, zpl)])
+    possible_ends = sorted([match.start() for match in re.finditer('\^', zpl)])
+    fd_cmds_indexes = []
+    for start in starts:
+        for possible_end in possible_ends:
+            if possible_end > start:
+                fd_cmds_indexes.append((start, possible_end))
+                break
+    return fd_cmds_indexes
+
+
 def extract_commands(zpl, indexes):
     """
     Extracts all commands based on (start, end) inside zpl code.
@@ -233,6 +252,18 @@ def break_gf_command(gf_cmd):
     data = gf_cmd_parts[4]
 
     return compression_type, binary_byte_count, graphic_field_count, bytes_per_row, data
+
+
+def break_fd_command(fd_cmd):
+    """
+    Extracts ^FD command parameters:
+        a - data string
+
+    :param fd_cmd: ^FD command (string)
+    :return: data from ^FD command
+    """
+    data = fd_cmd.lstrip('^FD')
+    return data
 
 
 def build_dg_command(bytes_total, bytes_per_row, data, image_name, extension='.GRF', device='R:'):
