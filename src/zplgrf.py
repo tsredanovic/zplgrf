@@ -323,6 +323,29 @@ def break_ft_command(ft_cmd):
     return int(x_y[0]), int(x_y[1])
 
 
+def break_aat_command(aat_cmd):
+    """
+    Extracts ^A@ command parameters:
+        x - x-axis position (in pixels)
+        y - y-axis position (in pixels)
+
+    :param aat_cmd: ^A@ command (string)
+    :return: field_orientation, char_height, width, font_drive, font_name from ^A@ command
+    """
+    parts = aat_cmd.lstrip('^A@').split(',')
+    field_orientation = parts[0]
+    char_height = int(parts[1])
+    width = int(parts[2])
+    font = parts[3]
+    font_drive = 'R:'
+    if ':' in font:
+        font_drive = '{}:'.format(font.split(':')[0])
+        font_name = font.split(':')[1]
+    else:
+        font_name = font
+    return field_orientation, char_height, width, font_drive, font_name
+
+
 def build_dg_command(bytes_total, bytes_per_row, data, image_name, extension='.GRF', device='R:'):
     """
     Generates ~DG command from parameters:
