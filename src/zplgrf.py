@@ -107,6 +107,26 @@ def size_byte_to_char(byte_size):
     return byte_size * 2
 
 
+def find_commands(zpl, cmd_start, cmd_end='^'):
+    """
+        Finds (start, end) indexes of all defined commands inside zpl code.
+
+        :param zpl: zpl code (string)
+        :return: (start, end) indexes of all defined commands inside zpl code
+        """
+    cmd_start = '\{}'.format(cmd_start) if cmd_start.startswith('^') else cmd_start
+    cmd_end = '\{}'.format(cmd_end) if cmd_end.startswith('^') else cmd_end
+    starts = sorted([match.start() for match in re.finditer(cmd_start, zpl)])
+    possible_ends = sorted([match.start() for match in re.finditer(cmd_end, zpl)])
+    cmds_indexes = []
+    for start in starts:
+        for possible_end in possible_ends:
+            if possible_end > start:
+                cmds_indexes.append((start, possible_end))
+                break
+    return cmds_indexes
+
+
 def find_dg_commands(zpl):
     """
     Finds (start, end) indexes of all dg commands inside zpl code.
