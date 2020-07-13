@@ -297,6 +297,32 @@ def break_fd_command(fd_cmd):
     return data
 
 
+def break_lh_command(lh_cmd):
+    """
+    Extracts ^LH command parameters:
+        x - x-axis position (in pixels)
+        y - y-axis position (in pixels)
+
+    :param lh_cmd: ^LH command (string)
+    :return: x, y from ^LH command
+    """
+    x_y = lh_cmd.lstrip('^LH').split(',')
+    return int(x_y[0]), int(x_y[1])
+
+
+def break_ft_command(ft_cmd):
+    """
+    Extracts ^FT command parameters:
+        x - x-axis position (in pixels)
+        y - y-axis position (in pixels)
+
+    :param ft_cmd: ^FT command (string)
+    :return: x, y from ^FT command
+    """
+    x_y = ft_cmd.lstrip('^FT').split(',')
+    return int(x_y[0]), int(x_y[1])
+
+
 def build_dg_command(bytes_total, bytes_per_row, data, image_name, extension='.GRF', device='R:'):
     """
     Generates ~DG command from parameters:
