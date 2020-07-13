@@ -184,6 +184,17 @@ def find_fd_commands(zpl):
     return fd_cmds_indexes
 
 
+def extract_command(zpl, index):
+    """
+    Extracts command based on (start, end) inside zpl code.
+
+    :param zpl: zpl code (string)
+    :param index: (start, end) index of command
+    :return: extracted command
+    """
+    return zpl[index[0]:index[1]]
+
+
 def extract_commands(zpl, indexes):
     """
     Extracts all commands based on (start, end) inside zpl code.
