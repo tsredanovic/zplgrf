@@ -7,7 +7,7 @@ with open(input_zpl_file_path, 'r') as in_file:
     zpl = in_file.read()
 
 # Find and extract ^GF commands
-gf_cmds_indexes = find_gf_commands(zpl)
+gf_cmds_indexes = find_commands(zpl, cmd_start='^GF', cmd_end='^')
 gf_cmds = extract_commands(zpl, gf_cmds_indexes)
 for gf_cmd in gf_cmds:
     # Extract parameters from ^GF commands

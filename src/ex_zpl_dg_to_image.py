@@ -7,7 +7,7 @@ with open(input_zpl_file_path, 'r') as in_file:
     zpl = in_file.read()
 
 # Find and extract ~DG commands
-dg_cmds_indexes = find_dg_commands(zpl)
+dg_cmds_indexes = find_commands(zpl, cmd_start='~DG', cmd_end='^')
 dg_cmds = extract_commands(zpl, dg_cmds_indexes)
 for dg_cmd in dg_cmds:
     # Extract parameters from ~DG commands

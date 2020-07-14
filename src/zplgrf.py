@@ -127,63 +127,6 @@ def find_commands(zpl, cmd_start, cmd_end='^'):
     return cmds_indexes
 
 
-def find_dg_commands(zpl):
-    """
-    Finds (start, end) indexes of all dg commands inside zpl code.
-
-    :param zpl: zpl code (string)
-    :return: (start, end) indexes of all dg commands inside zpl code
-    """
-    dg_cmd_start = '~DG'
-    starts = sorted([match.start() for match in re.finditer(dg_cmd_start, zpl)])
-    possible_ends = sorted([match.start() for match in re.finditer('\^', zpl)])
-    dg_cmds_indexes = []
-    for start in starts:
-        for possible_end in possible_ends:
-            if possible_end > start:
-                dg_cmds_indexes.append((start, possible_end))
-                break
-    return dg_cmds_indexes
-
-
-def find_gf_commands(zpl):
-    """
-    Finds (start, end) indexes of all gf commands inside zpl code.
-
-    :param zpl: zpl code (string)
-    :return: (start, end) indexes of all gf commands inside zpl code
-    """
-    gf_cmd_start = '\^GF'
-    starts = sorted([match.start() for match in re.finditer(gf_cmd_start, zpl)])
-    possible_ends = sorted([match.start() for match in re.finditer('\^', zpl)])
-    gf_cmds_indexes = []
-    for start in starts:
-        for possible_end in possible_ends:
-            if possible_end > start:
-                gf_cmds_indexes.append((start, possible_end))
-                break
-    return gf_cmds_indexes
-
-
-def find_fd_commands(zpl):
-    """
-    Finds (start, end) indexes of all fd commands inside zpl code.
-
-    :param zpl: zpl code (string)
-    :return: (start, end) indexes of all fd commands inside zpl code
-    """
-    gf_cmd_start = '\^FD'
-    starts = sorted([match.start() for match in re.finditer(gf_cmd_start, zpl)])
-    possible_ends = sorted([match.start() for match in re.finditer('\^', zpl)])
-    fd_cmds_indexes = []
-    for start in starts:
-        for possible_end in possible_ends:
-            if possible_end > start:
-                fd_cmds_indexes.append((start, possible_end))
-                break
-    return fd_cmds_indexes
-
-
 def extract_command(zpl, index):
     """
     Extracts command based on (start, end) inside zpl code.
