@@ -7,7 +7,7 @@ def closest_index(from_indexes, to_index):
     lowest_distance_listpos = (float("inf"), None)
     for i, from_index in enumerate(from_indexes):
         distance = to_index[0] - from_index[0]
-        if distance > 0 and distance < lowest_distance_listpos[0]:
+        if 0 < distance < lowest_distance_listpos[0]:
             lowest_distance_listpos = (distance, i)
     closest_index = from_indexes[lowest_distance_listpos[1]]
     return closest_index
@@ -36,7 +36,6 @@ for gf_cmd in gf_cmds:
     bits_per_row = size_byte_to_bit(bytes_per_row)
     image = bits_to_image(bits_total, bits_per_row, data_bits)
 
-texts = []
 fd_cmds_indexes = find_commands(zpl, cmd_start='^FD', cmd_end='^')
 lh_cmds_indexes = find_commands(zpl, cmd_start='^LH', cmd_end='^')
 ft_cmds_indexes = find_commands(zpl, cmd_start='^FT', cmd_end='^')
