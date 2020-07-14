@@ -15,6 +15,6 @@ dg_cmd = build_dg_command(bytes_total, bytes_per_row, data, '000')
 # Generate ZPL code with generated ~DG command
 zpl = write_zpl(dg_cmd, 20, 20, 1, 1)
 
-output_zpl_file_path = './zpl/example.zpl'
+output_zpl_file_path = './zpl_dg/example.zpl'
 with open(output_zpl_file_path, 'w') as out_file:
     out_file.write(zpl)
