@@ -236,7 +236,7 @@ def break_fd_command(fd_cmd):
     :param fd_cmd: ^FD command (string)
     :return: data from ^FD command
     """
-    data = fd_cmd.lstrip('^FD')
+    data = fd_cmd[3:]
     return data
 
 
@@ -249,7 +249,7 @@ def break_lh_command(lh_cmd):
     :param lh_cmd: ^LH command (string)
     :return: x, y from ^LH command
     """
-    x_y = lh_cmd.lstrip('^LH').split(',')
+    x_y = lh_cmd[3:].split(',')
     return int(x_y[0]), int(x_y[1])
 
 
@@ -262,7 +262,7 @@ def break_ft_command(ft_cmd):
     :param ft_cmd: ^FT command (string)
     :return: x, y from ^FT command
     """
-    x_y = ft_cmd.lstrip('^FT').split(',')
+    x_y = ft_cmd[3:].split(',')
     return int(x_y[0]), int(x_y[1])
 
 
@@ -275,7 +275,7 @@ def break_aat_command(aat_cmd):
     :param aat_cmd: ^A@ command (string)
     :return: field_orientation, char_height, width, font_drive, font_name from ^A@ command
     """
-    parts = aat_cmd.lstrip('^A@').split(',')
+    parts = aat_cmd[3:].split(',')
     field_orientation = parts[0]
     char_height = int(parts[1])
     width = int(parts[2])
