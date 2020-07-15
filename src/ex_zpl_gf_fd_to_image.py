@@ -59,7 +59,7 @@ for fd_cmd_index in fd_cmds_indexes:
 
     draw = ImageDraw.Draw(image)
     font_path = './fonts/AndaleMono.ttf'
-    font_size = 60
+    font_size = int(60 * char_height / 57)
     font = ImageFont.truetype(font_path, font_size)
     draw.text(
         xy=(fd_data_pos[0], fd_data_pos[1] - char_height * (43/57)),
