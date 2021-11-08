@@ -13,7 +13,7 @@ def closest_index(from_indexes, to_index):
     return closest_index
 
 
-input_zpl_file_path = './zpl_gf/pila2_ex_0.zpl'
+input_zpl_file_path = './zpl_gf/prod_ex_4.zpl'
 
 # Read ZPL code from a file
 with open(input_zpl_file_path, 'r') as in_file:
@@ -41,9 +41,12 @@ lh_cmds_indexes = find_commands(zpl, cmd_start='^LH', cmd_end='^')
 ft_cmds_indexes = find_commands(zpl, cmd_start='^FT', cmd_end='^')
 aat_cmds_indexes = find_commands(zpl, cmd_start='^A@', cmd_end='^')
 
+texts = []
+
 for fd_cmd_index in fd_cmds_indexes:
     fd_cmd = extract_command(zpl, fd_cmd_index)
     fd_data = break_fd_command(fd_cmd)
+    texts.append(fd_data)
 
     closest_lh_cmd_index = closest_index(lh_cmds_indexes, fd_cmd_index)
     lh_cmd = extract_command(zpl, closest_lh_cmd_index)
@@ -68,4 +71,4 @@ for fd_cmd_index in fd_cmds_indexes:
         font=font
     )
 
-image.save('./img/pila2_ex_0.png')
+image.save('./img/prod_ex_4.png')
